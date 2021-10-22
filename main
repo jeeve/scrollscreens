@@ -1,3 +1,4 @@
+// ------------------------------------------------------------------------------------------
 PROCÉDURE FEN_MAIN()
 
 gnTempsTimer, gnDuree, n est un entier
@@ -45,18 +46,7 @@ SI bQueDesSupprime ALORS
 FIN
 
 
-// Résumé : <indiquez ici ce que fait la procédure>
-// Syntaxe :
-// Go ()
-//
-// Paramètres :
-//	Aucun
-// Valeur de retour :
-// 	Aucune
-//
-// Exemple :
-// Indiquez ici un exemple d'utilisation.
-//
+// ------------------------------------------------------------------------------------------
 PROCÉDURE Go()
 
 gnDuree = INILit("options", "speed", "250", fRepExe() + "\options.ini")
@@ -140,56 +130,20 @@ SINON // mode ecran par ecran
 	FIN	
 	
 FIN	
-	
 
 
-
-
-// Résumé : <indiquez ici ce que fait la procédure>
-// Syntaxe :
-// Affiche ()
-//
-// Paramètres :
-//	Aucun
-// Valeur de retour :
-// 	Aucune
-//
-// Exemple :
-// Indiquez ici un exemple d'utilisation.
-//
+// ------------------------------------------------------------------------------------------
 PROCÉDURE Affiche()
 IMG_SansNom1 = NomFichierImage
 
 
 
-// Résumé : <indiquez ici ce que fait la procédure>
-// Syntaxe :
-// Efface ()
-//
-// Paramètres :
-//	Aucun
-// Valeur de retour :
-// 	Aucune
-//
-// Exemple :
-// Indiquez ici un exemple d'utilisation.
-//
+// ------------------------------------------------------------------------------------------
 PROCÉDURE Efface()
 IMG_SansNom1 = ""
 
 
-// Résumé : <indiquez ici ce que fait la procédure>
-// Syntaxe :
-//[ <Résultat> = ] DernierNumero ()
-//
-// Paramètres :
-//	Aucun
-// Valeur de retour :
-// 	entier sur 8 octets : // 	Aucune
-//
-// Exemple :
-// Indiquez ici un exemple d'utilisation.
-//
+// ------------------------------------------------------------------------------------------
 PROCÉDURE DernierNumero()
 
 i est un entier = 1
@@ -200,18 +154,7 @@ FIN
 
 RENVOYER i-1
 
-// Résumé : <indiquez ici ce que fait la procédure>
-// Syntaxe :
-//[ <Résultat> = ] IndiceSuivant (<k>)
-//
-// Paramètres :
-//	k : <indiquez ici le rôle de k>
-// Valeur de retour :
-// 	entier : // 	Aucune
-//
-// Exemple :
-// Indiquez ici un exemple d'utilisation.
-//
+// ------------------------------------------------------------------------------------------
 PROCÉDURE IndiceSuivant(k)
 i est un entier = k + 1
 
@@ -229,18 +172,7 @@ SINON
 	RENVOYER i	
 FIN
 
-// Résumé : <indiquez ici ce que fait la procédure>
-// Syntaxe :
-//[ <Résultat> = ] Premier ()
-//
-// Paramètres :
-//	Aucun
-// Valeur de retour :
-// 	entier : // 	Aucune
-//
-// Exemple :
-// Indiquez ici un exemple d'utilisation.
-//
+// ------------------------------------------------------------------------------------------
 PROCÉDURE Premier()
 i est un entier = 1
 
@@ -250,18 +182,7 @@ FIN
 
 RENVOYER i
 
-// Résumé : <indiquez ici ce que fait la procédure>
-// Syntaxe :
-//[ <Résultat> = ] TrouveIndice ()
-//
-// Paramètres :
-//	Aucun
-// Valeur de retour :
-// 	entier : // 	Aucune
-//
-// Exemple :
-// Indiquez ici un exemple d'utilisation.
-//
+// ------------------------------------------------------------------------------------------
 PROCÉDURE TrouveIndice()
 
 i est un entier = 1
@@ -275,19 +196,7 @@ FIN
 
 RENVOYER 0
 
-// Résumé : <indiquez ici ce que fait la procédure>
-// Syntaxe :
-//MoveImage (<x>, <y>)
-//
-// Paramètres :
-// 	x : <indiquez ici le rôle de x>
-// 	y : <indiquez ici le rôle de y>
-// Valeur de retour :
-// 	Aucune
-//
-// Exemple :
-// Indiquez ici un exemple d'utilisation.
-//
+// ------------------------------------------------------------------------------------------
 PROCÉDURE MoveImage(x, y)
 
 IMG_SansNom1..X = x
@@ -299,18 +208,7 @@ IMG_SansNom1..X = x
 //fin
 
 
-// Résumé : <indiquez ici ce que fait la procédure>
-// Syntaxe :
-//[ <Résultat> = ] Numero (<Indice>)
-//
-// Paramètres :
-//	Indice : <indiquez ici le rôle de Indice>
-// Valeur de retour :
-// 	entier : // 	Aucune
-//
-// Exemple :
-// Indiquez ici un exemple d'utilisation.
-//
+// ------------------------------------------------------------------------------------------
 PROCÉDURE Numero(Indice)
 
 i est un entier = 1
