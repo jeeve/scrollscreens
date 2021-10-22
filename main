@@ -1,0 +1,329 @@
+PROCÉDURE FEN_MAIN()
+
+gnTempsTimer, gnDuree, n est un entier
+NomFichier est une chaîne = INILit("options", "file",fRepExe() + "\synchro.ini", fRepExe() + "\options.ini")
+NomFichierImage est une chaîne
+gnTempsTimer = INILit("options", "timer", "5", fRepExe() + "\options.ini")
+
+Indice est un entier = TrouveIndice()
+SI Indice = 0 ALORS
+	Indice = DernierNumero() + 1
+FIN
+
+INIEcrit(NumériqueVersChaîne(Indice),"machine",NetNomMachine(),NomFichier)
+INIEcrit(NumériqueVersChaîne(Indice),"process",NumériqueVersChaîne(ExeDonnePID(exePID)),NomFichier)
+INIEcrit(NumériqueVersChaîne(Indice),"time", DateHeureSys(),NomFichier)
+
+gsListeImagesFond est une chaîne = INILit("options", "background_images","", fRepExe() + "\options.ini")
+tabImagesFond est un tableau de chaînes
+ChaîneVersTableau(gsListeImagesFond,tabImagesFond,",")
+SI tabImagesFond..Occurrence = 1 ALORS
+	IMG_Fond = tabImagesFond[1]
+FIN
+SI tabImagesFond..Occurrence > 1 ALORS
+	n = Numero(Indice)
+	SI n <= tabImagesFond..Occurrence ALORS
+		IMG_Fond = tabImagesFond[n]
+	FIN	
+FIN
+
+Timer("Go", gnTempsTimer, 1)
+
+
+INIEcrit(NumériqueVersChaîne(Indice),"delete","yes",NomFichier)
+
+i est un entier = 1
+bQueDesSupprime est un booléen = Vrai
+TANTQUE INILit(NumériqueVersChaîne(i), "machine","",NomFichier) <> ""
+	SI INILit(NumériqueVersChaîne(i), "delete","",NomFichier) = "" ALORS 
+		bQueDesSupprime = Faux
+	FIN
+	i = i + 1
+FIN
+SI bQueDesSupprime ALORS
+	fSupprime(NomFichier)
+FIN
+
+
+// Résumé : <indiquez ici ce que fait la procédure>
+// Syntaxe :
+// Go ()
+//
+// Paramètres :
+//	Aucun
+// Valeur de retour :
+// 	Aucune
+//
+// Exemple :
+// Indiquez ici un exemple d'utilisation.
+//
+PROCÉDURE Go()
+
+gnDuree = INILit("options", "speed", "250", fRepExe() + "\options.ini")
+NomFichierImage = INILit("options", "image","image.jpg", fRepExe() + "\options.ini")
+gsMode est une chaîne = INILit("options", "mode", "scroll,scale", fRepExe() + "\options.ini")
+INIEcrit(NumériqueVersChaîne(Indice),"width", NumériqueVersChaîne(FEN_MAIN..Largeur),NomFichier)
+
+SI ChaîneOccurrence(gsMode, "scale") > 0 ALORS
+	IMG_SansNom1..ImageMode = imgHEC
+FIN
+
+i est un entier = 1
+imax est un entier = 0
+nTempsMax, nTemps est un numérique
+nTempsMax = 0
+sTemps, sTEmpsMax est une chaîne
+
+TANTQUE INILit(NumériqueVersChaîne(i), "machine","",NomFichier) <> ""
+	SI INILit(NumériqueVersChaîne(i), "delete","",NomFichier) = "" ALORS
+		sTemps = INILit(NumériqueVersChaîne(i), "time","", NomFichier)
+		nTemps = sTemps
+		SI nTemps > nTempsMax ALORS
+			imax = i
+			nTempsMax = nTemps
+			sTEmpsMax = sTemps
+		FIN
+	FIN
+	i = i + 1
+FIN	
+
+k est un entier = IndiceSuivant(imax)
+l est un entier = IndiceSuivant(k)
+
+c est un numérique = 0
+sDiff est une chaîne = DateHeureDifférence(sTEmpsMax, DateHeureSys())
+c = sDiff
+
+SI ChaîneOccurrence(gsMode, "scroll") > 0 ALORS // mode scroll d'un ecran au suivant
+	
+	SI (Indice = k OU Indice = l) ALORS
+		Affiche()
+	FIN
+	
+	SI (Indice = k) ET c > gnDuree ALORS
+		INIEcrit(NumériqueVersChaîne(Indice),"time", DateHeureSys(),NomFichier)
+		Efface()
+	FIN	
+
+	nlargeurk est un entier = Val(INILit(NumériqueVersChaîne(k), "width","", NomFichier))
+	nLargeurl est un entier = Val(INILit(NumériqueVersChaîne(l), "width","", NomFichier))
+	
+	SI Indice = k ET c = 0 ALORS
+		IMG_SansNom1..X = 0
+	FIN
+	
+	SI k <> l ET  Indice = l ET c = 0 ALORS
+		IMG_SansNom1..X = -nLargeurl	
+	FIN
+	
+	SI Indice = k ET c > 0 ALORS
+		//IMG_SansNom1..X = PartieEntière(c * nlargeurk / gnDuree)
+		MoveImage(PartieEntière(c * nlargeurk / gnDuree), 0)
+	FIN
+
+	SI k <> l ET Indice = l ET c > 0 ALORS
+		//IMG_SansNom1..X = PartieEntière(c * nlargeurl / gnDuree - nLargeurl)
+		MoveImage(PartieEntière(c * nLargeurl / gnDuree - nLargeurl), 0)
+	FIN
+	
+SINON // mode ecran par ecran
+
+	IMG_SansNom1..X = 6
+
+	SI (Indice = k) ALORS
+		Affiche()
+	FIN
+	
+	SI (Indice = k) ET c > gnDuree ALORS
+		INIEcrit(NumériqueVersChaîne(Indice), "time", DateHeureSys(),NomFichier)
+		Efface()
+	FIN	
+	
+FIN	
+	
+
+
+
+
+// Résumé : <indiquez ici ce que fait la procédure>
+// Syntaxe :
+// Affiche ()
+//
+// Paramètres :
+//	Aucun
+// Valeur de retour :
+// 	Aucune
+//
+// Exemple :
+// Indiquez ici un exemple d'utilisation.
+//
+PROCÉDURE Affiche()
+IMG_SansNom1 = NomFichierImage
+
+
+
+// Résumé : <indiquez ici ce que fait la procédure>
+// Syntaxe :
+// Efface ()
+//
+// Paramètres :
+//	Aucun
+// Valeur de retour :
+// 	Aucune
+//
+// Exemple :
+// Indiquez ici un exemple d'utilisation.
+//
+PROCÉDURE Efface()
+IMG_SansNom1 = ""
+
+
+// Résumé : <indiquez ici ce que fait la procédure>
+// Syntaxe :
+//[ <Résultat> = ] DernierNumero ()
+//
+// Paramètres :
+//	Aucun
+// Valeur de retour :
+// 	entier sur 8 octets : // 	Aucune
+//
+// Exemple :
+// Indiquez ici un exemple d'utilisation.
+//
+PROCÉDURE DernierNumero()
+
+i est un entier = 1
+
+TANTQUE INILit(NumériqueVersChaîne(i), "machine","",NomFichier) <> ""
+	i = i + 1
+FIN
+
+RENVOYER i-1
+
+// Résumé : <indiquez ici ce que fait la procédure>
+// Syntaxe :
+//[ <Résultat> = ] IndiceSuivant (<k>)
+//
+// Paramètres :
+//	k : <indiquez ici le rôle de k>
+// Valeur de retour :
+// 	entier : // 	Aucune
+//
+// Exemple :
+// Indiquez ici un exemple d'utilisation.
+//
+PROCÉDURE IndiceSuivant(k)
+i est un entier = k + 1
+
+SI INILit(NumériqueVersChaîne(i), "machine","",NomFichier) = "" ALORS
+	RENVOYER Premier()
+FIN
+
+TANTQUE INILit(NumériqueVersChaîne(i), "delete","",NomFichier) <> ""
+	i = i + 1
+FIN
+
+SI INILit(NumériqueVersChaîne(i), "machine","",NomFichier) = "" ALORS
+	RENVOYER Premier()
+SINON
+	RENVOYER i	
+FIN
+
+// Résumé : <indiquez ici ce que fait la procédure>
+// Syntaxe :
+//[ <Résultat> = ] Premier ()
+//
+// Paramètres :
+//	Aucun
+// Valeur de retour :
+// 	entier : // 	Aucune
+//
+// Exemple :
+// Indiquez ici un exemple d'utilisation.
+//
+PROCÉDURE Premier()
+i est un entier = 1
+
+TANTQUE INILit(NumériqueVersChaîne(i), "delete","",NomFichier) <> ""
+	i = i + 1
+FIN
+
+RENVOYER i
+
+// Résumé : <indiquez ici ce que fait la procédure>
+// Syntaxe :
+//[ <Résultat> = ] TrouveIndice ()
+//
+// Paramètres :
+//	Aucun
+// Valeur de retour :
+// 	entier : // 	Aucune
+//
+// Exemple :
+// Indiquez ici un exemple d'utilisation.
+//
+PROCÉDURE TrouveIndice()
+
+i est un entier = 1
+
+TANTQUE INILit(NumériqueVersChaîne(i), "machine","",NomFichier) <> ""
+	SI (INILit(NumériqueVersChaîne(i), "machine","",NomFichier) = NetNomMachine()) ET (INILit(NumériqueVersChaîne(i), "process","",NomFichier) = NumériqueVersChaîne(ExeDonnePID(exePID))) ALORS
+		RENVOYER i		
+	FIN
+	i = i + 1
+FIN
+
+RENVOYER 0
+
+// Résumé : <indiquez ici ce que fait la procédure>
+// Syntaxe :
+//MoveImage (<x>, <y>)
+//
+// Paramètres :
+// 	x : <indiquez ici le rôle de x>
+// 	y : <indiquez ici le rôle de y>
+// Valeur de retour :
+// 	Aucune
+//
+// Exemple :
+// Indiquez ici un exemple d'utilisation.
+//
+PROCÉDURE MoveImage(x, y)
+
+IMG_SansNom1..X = x
+
+//appeldll32("user32","MoveWindow",handle(IMG_SansNom1),x,y,IMG_SansNom1..largeur,IMG_SansNom1..hauteur,1)
+//appeldll32("user32","UpdateWindow",handle())
+//si appeldll32("user32","GetInputState") alors
+//	multitache(-1)
+//fin
+
+
+// Résumé : <indiquez ici ce que fait la procédure>
+// Syntaxe :
+//[ <Résultat> = ] Numero (<Indice>)
+//
+// Paramètres :
+//	Indice : <indiquez ici le rôle de Indice>
+// Valeur de retour :
+// 	entier : // 	Aucune
+//
+// Exemple :
+// Indiquez ici un exemple d'utilisation.
+//
+PROCÉDURE Numero(Indice)
+
+i est un entier = 1
+k est un entier = 1
+
+TANTQUE INILit(NumériqueVersChaîne(i), "machine","",NomFichier) <> ""
+	SI i = Indice ALORS
+		RENVOYER k
+	FIN
+	SI INILit(NumériqueVersChaîne(i), "delete","",NomFichier) = "" ALORS
+		k = k + 1
+	FIN
+	i = i + 1
+FIN
+
+RENVOYER 0
